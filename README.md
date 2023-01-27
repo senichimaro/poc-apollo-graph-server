@@ -1,5 +1,13 @@
 # Implementation of Apollo Server
 
+Simple How-To in three steps:
+
+1. Setup: What Apollo Needs to Run
+2. Connection: Let's Say Data
+3. Run: Bind Data, Resolvers & Endpoint
+
+## Packages
+
 - Server Side Packages
   - core: graphql
   - server service: apollo-server
@@ -9,13 +17,13 @@
 npm i graphql apollo-server apollo-datasource-rest
 ```
 
-> Dev Dependencies: nodemon
+> Development Dependencies: nodemon
 
 ## First, What Apollo Needs to Run
 
-### 1. Schema
-
 The most basic setup for Apollo Server should include an Schema, even a dummy one.
+
+### Schema
 
 ```js
 const { gql } = require("apollo-server");
@@ -28,7 +36,9 @@ const typeDefs = gql`
 module.exports = typeDefs;
 ```
 
-Then, It follows an Express.js Server Pattern. Then, set it up alike.
+## Basic Apollo Server
+
+Then, It follows an Express.js Server Pattern. So, set it up alike.
 
 ```js
 const { ApolloServer } = require("apollo-server");
@@ -49,8 +59,8 @@ Now, Apollo is reachable. But It does nothing else.
 
 About the Data, three things must be said:
 
-1. Where is the Data? 
-2. How the Data looks? 
+1. Where is the Data?
+2. How the Data looks?
 3. What should provide the Data?
 
 Let's use an Endpoint which returns json data (placeholder) as https://jsonplaceholder.typicode.com/
@@ -67,25 +77,29 @@ Apollo allows for petitions to SQL, NoSQL, Cloud and REST (used here) based sour
 This information allows to create the datasource file.
 
 ```js
-const { RESTDataSource } = require("apollo-datasource-rest")
+const { RESTDataSource } = require("apollo-datasource-rest");
 class OneSource extends RESTDataSource {
-    constructor(){
-        super()
-        this.baseURL = "https://jsonplaceholder.typicode.com/"
-    }
-    getPosts(){return this.get("posts")}
-    getPost(id){return this.get(`posts/${id}`)}
+  constructor() {
+    super();
+    this.baseURL = "https://jsonplaceholder.typicode.com/";
+  }
+  getPosts() {
+    return this.get("posts");
+  }
+  getPost(id) {
+    return this.get(`posts/${id}`);
+  }
 }
-module.exports = OneSource
+module.exports = OneSource;
 ```
 
-### How the Data looks?
+### 2. How the Data looks?
 
 The Schema defines how data should looks and which data is allowed to be queried for.
 
 ```json
 {
-    "userId": 1,
+  "userId": 1,
   "id": 1,
   "title": "sunt aut facere...",
   "body": "quia et suscipit\nsuscipit..."
@@ -120,7 +134,7 @@ const typeDefs = gql`
 module.exports = typeDefs;
 ```
 
-### What should provide the Data?
+### 3. What should provide the Data?
 
 Resolvers should connect the data source methods with the data available to be queried.
 
@@ -128,10 +142,10 @@ Technically speaking, a Resolver is a function. But It's implemented as an objec
 
 ```js
 const resolvers = {
-    Query: {
-        getPosts: () => {}
-    }
-}
+  Query: {
+    getPosts: () => {},
+  },
+};
 ```
 
 The resolver validates (background process) the query and returns the data source result.
@@ -140,22 +154,45 @@ The resolver validates (background process) the query and returns the data sourc
 const resolvers = {
   Query: {
     getPosts: (_, __, { dataSources }) => dataSources.oneEndpoint.getPosts(),
-    getPost: (_, { id }, { dataSources }) => dataSources.oneEndpoint.getPost(id),
+    getPost: (_, { id }, { dataSources }) =>
+      dataSources.oneEndpoint.getPost(id),
   },
 };
 module.exports = resolvers;
 ```
 
 
+## Third, Bind Data, Resolvers & Endpoint
+
+Create the files is not enough, they must placed within Apollo Server. In certain way, the pattern is similar what Redux does: the library has socket or plugs prepared to receive values.
+
+The server is prepared to respond to some specific keys, as typeDefs, resolvers and datasource.
 
 
+```js
+const { ApolloServer } = require("apollo-server");
 
+const typeDefs = require("./schema");
+const resolvers = require("./resolvers");
+const OneEndpoint = require("./datasource");
 
+async function initApolloServer(typeDefs) {
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    dataSources: () => {
+      return {
+        oneEndpoint: new OneEndpoint(),
+      };
+    },
+  });
+  await server.listen({ port: process.env.PORT || 4000 });
+}
+initApolloServer(typeDefs);
+```
 
+> Prod implementation: process.env.PORT (host allowed)
 
+Now, Apollo is reachable & fully functional! 🎉
 
-
-
-
-
-
+![Apollo Query](readme_files/apollo-query.png)

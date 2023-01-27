@@ -1,9 +1,19 @@
-const { ApolloServer } = require("apollo-server")
-const schema = require("./schema")
+const { ApolloServer } = require("apollo-server");
 
-async function initApolloServer(){
-    console.log("Server executed")
-    const server = new ApolloServer({typeDefs:schema})
-    await server.listen({port: 4000})
+const typeDefs = require("./schema");
+const resolvers = require("./resolvers");
+const OneEndpoint = require("./datasource");
+
+async function initApolloServer(typeDefs) {
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    dataSources: () => {
+      return {
+        oneEndpoint: new OneEndpoint(),
+      };
+    },
+  });
+  await server.listen({ port: process.env.PORT || 4000 });
 }
-initApolloServer(schema)
+initApolloServer(typeDefs);
