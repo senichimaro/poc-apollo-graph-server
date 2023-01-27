@@ -1,0 +1,17 @@
+{
+  "name": "poc-demo-apollo-graph-server",
+  "version": "1.0.0",
+  "description": "Apollo Server PoC, Setup and Running",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon ./index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-datasource-rest": "^3.7.0",
+    "apollo-server": "^3.11.1",
+    "graphql": "^16.6.0",
+    "nodemon": "^2.0.20"
+  }
+}
