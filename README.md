@@ -49,8 +49,8 @@ Now, Apollo is reachable. But It does nothing else.
 
 About the Data, three things must be said:
 
-1. Where is the Data? 
-2. How the Data looks? 
+1. Where is the Data?
+2. How the Data looks?
 3. What should provide the Data?
 
 Let's use an Endpoint which returns json data (placeholder) as https://jsonplaceholder.typicode.com/
@@ -67,16 +67,20 @@ Apollo allows for petitions to SQL, NoSQL, Cloud and REST (used here) based sour
 This information allows to create the datasource file.
 
 ```js
-const { RESTDataSource } = require("apollo-datasource-rest")
+const { RESTDataSource } = require("apollo-datasource-rest");
 class OneSource extends RESTDataSource {
-    constructor(){
-        super()
-        this.baseURL = "https://jsonplaceholder.typicode.com/"
-    }
-    getPosts(){return this.get("posts")}
-    getPost(id){return this.get(`posts/${id}`)}
+  constructor() {
+    super();
+    this.baseURL = "https://jsonplaceholder.typicode.com/";
+  }
+  getPosts() {
+    return this.get("posts");
+  }
+  getPost(id) {
+    return this.get(`posts/${id}`);
+  }
 }
-module.exports = OneSource
+module.exports = OneSource;
 ```
 
 ### How the Data looks?
@@ -85,7 +89,7 @@ The Schema defines how data should looks and which data is allowed to be queried
 
 ```json
 {
-    "userId": 1,
+  "userId": 1,
   "id": 1,
   "title": "sunt aut facere...",
   "body": "quia et suscipit\nsuscipit..."
@@ -104,7 +108,7 @@ const { gql } = require("apollo-server");
 const typeDefs = gql`
   type Query {
     getPosts: [Post]
-    getPost(id: ID): Post
+    getPost(id: Int): Post
   }
   type Post {
     "Post ID"
@@ -128,10 +132,10 @@ Technically speaking, a Resolver is a function. But It's implemented as an objec
 
 ```js
 const resolvers = {
-    Query: {
-        getPosts: () => {}
-    }
-}
+  Query: {
+    getPosts: () => {},
+  },
+};
 ```
 
 The resolver validates (background process) the query and returns the data source result.
@@ -140,22 +144,9 @@ The resolver validates (background process) the query and returns the data sourc
 const resolvers = {
   Query: {
     getPosts: (_, __, { dataSources }) => dataSources.oneEndpoint.getPosts(),
-    getPost: (_, { id }, { dataSources }) => dataSources.oneEndpoint.getPost(id),
+    getPost: (_, { id }, { dataSources }) =>
+      dataSources.oneEndpoint.getPost(id),
   },
 };
 module.exports = resolvers;
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
