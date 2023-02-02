@@ -5,7 +5,7 @@ FROM node:17-alpine
 WORKDIR /server
 
 # Image Action
-COPY package.json /server
+COPY package.json .
 
 # Buildtime Executions
 RUN npm install
