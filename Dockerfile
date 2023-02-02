@@ -11,10 +11,10 @@ COPY package.json /server
 RUN npm install
 
 # Image Actions
-COPY . /server
+COPY . .
 
 # Container Ports Exposure
 EXPOSE 4000
 
 # Runtime Executions
-CMD ["node", "index.js"]
+CMD ["npm", "run", "dev"]
