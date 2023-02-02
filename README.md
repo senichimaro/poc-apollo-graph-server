@@ -196,3 +196,18 @@ initApolloServer(typeDefs);
 Now, Apollo is reachable & fully functional! 🎉
 
 ![Apollo Query](readme_files/apollo-query.png)
+
+---
+
+# Run from Docker
+
+* Server puzzledotscode/poc_server
+
+
+
+
+
+
+
+
+
